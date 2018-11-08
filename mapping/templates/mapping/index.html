@@ -1,0 +1,89 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+     <!-- Bootstrap -->
+     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+ 
+     <!--CSS-->
+
+     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+     <link rel="stylesheet" type="text/css" href="{% static 'leaflet/leaflet.groupedlayercontrol.min.css' %}">
+ 
+     <!--Leaflet-->
+     {% load leaflet_tags %}
+     {% leaflet_js %}
+     {% leaflet_css %}
+ 
+     <script type="text/javascript" src = "{% static 'leaflet/leaflet.ajax.js' %}"></script>
+     <script type="text/javascript" src = "{% static 'leaflet/leaflet.groupedlayercontrol.min.js' %}"></script>
+ 
+ 
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Eureka Water Meters</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   
+</head>
+<body>
+    <h3>A Visualization of our Client Meters</h3>
+    <script type="text/javascript" >
+        function maps_layers(map, options){
+
+            var osm = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+            var roads = new L.GeoJSON.AJAX("{% url 'eureka_maps:roads'%}",{
+                style: function road_colors(feature){
+                    switch(feature.properties.road_type.toLowerCase()){
+                        case 'tarmac':
+                            return {
+                                color: 'black'
+                            };
+                        break;
+                        case 'murram':
+                            return {
+                                color: 'brown'
+                            };
+                        break;
+                        default:
+                            return {
+                                color: 'brown'
+                            };
+                    }
+                },
+                onEachFeature: function(feature, layer){
+                layer.bindPopup('<b>Road Name: </b>' + feature.properties.road_name.toString()
+                                + '</br>' + '<b> Surface Type </b>' +
+                                feature.properties.road_type.toString())
+                 }
+                });
+
+            var c_meters = new L.GeoJSON.AJAX("{% url 'eureka_maps:c_meters' %}",{
+                
+                });
+
+            var baseLayers = {
+                "OSM":osm
+                    };
+
+            var groupedOverlays = {
+                "Layers": {
+                "Kiserian roads": roads,
+                "Clients Meters": c_meters,
+                    }
+                };
+
+         
+            roads.addTo(map);
+            c_meters.addTo(map);
+
+            L.control.groupedLayers(baseLayers, groupedOverlays).addTo(map);
+        }
+    </script> 
+
+    {% leaflet_map "Eureka_Water_Map" callback="window.maps_layers" %} 
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+from django.contrib.gis.db import models
+
+
+class kiserian_roads(models.Model):
+    id = models.BigIntegerField()
+    road_name = models.CharField(max_length=80)
+    width = models.BigIntegerField()
+    road_class = models.CharField(max_length=10)
+    road_type = models.CharField(max_length=10)
+    lanes = models.BigIntegerField()
+    geom = models.MultiLineStringField(srid=4326)
+
+
+# Auto-generated `LayerMapping` dictionary for kiserian_roads model
+kiserian_roads_mapping = {
+    'id': 'id',
+    'road_name': 'road_name',
+    'width': 'Width',
+    'road_class': 'road_class',
+    'road_type': 'road_type',
+    'lanes': 'Lanes',
+    'geom': 'MULTILINESTRING',
+}
