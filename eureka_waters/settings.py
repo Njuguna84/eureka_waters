@@ -125,14 +125,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 LEAFLET_CONFIG = {
-    'DEFAULT_CENTER': (-1.433, 36.6837),
-    'DEFAULT_ZOOM': 13,
+    'DEFAULT_CENTER': (-1.426882, 36.694878),
+    'DEFAULT_ZOOM': 15,
     'MIN_ZOOM': 2,
     'MAX_ZOOM': 19,
     'ATTRIBUTION_PREFIX': 'Mutall Data Managers',
+    
 }
