@@ -23,35 +23,21 @@ def client_meters(request):
 
 
 # connected = 0 and disconneted = 1
+# def disconneted_clients(request):
+#     meters = serializers.serialize('geojson', ClientMeters.objects.filter(is_disconnected='1'))
+#     return HttpResponse(meters, content_type='json')
+
+
 def disconneted_clients(request):
-    meters = serializers.serialize('geojson', ClientMeters.objects.filter(is_disconnected='1'))
+    q= ClientMeters.objects.filter(is_disconnected='1')
+    meters = serializers.serialize('geojson',q)
     return HttpResponse(meters, content_type='json')
 
 
+
 def multi_query(request):
-    with connection.cursor as cursor:
-      q=cursor.execute(
-            "SELECT" 
-                "client.full_name," 
-                "client.code," 
-                "zone.description", 
-                "client.is_bulk, "
-"                client.is_disconnected, "
-"                mobile_readings.value, "
-"                location.location, "
-"                location.longitude, "
-"                location.latitude, "
-"                location.accuracy, "
-"                location.altitude"
-"            FROM "
-"                pusblic.client, "
-"                public.location, "
-"                public.mobile_readings, "
-"                public.zone"
-"            WHERE "
-"            client.zone = zone.zone AND"
-"            clienst.code = mobile_readings.code AND"
-"            location.mobile_readings = mobile_readings.mobile_readings"
+    with connection.cursor() as cursor:
+        q=cursor.execute("SELECT client.full_name,client.code,zone.description,client.is_bulk,client.is_disconnected,mobile_readings.value, location.location,location.longitude,location.latitude,location.accuracy,location.altitude  FROM public.client, public.location, public.mobile_readings,public.zone WHERE client.zone = zone.zone AND client.code = mobile_readings.code AND location.mobile_readings = mobile_readings.mobile_readings"
        )
     clients = serializers.serialize('geojson', q)
     return HttpResponse(clients, content_type='json')
