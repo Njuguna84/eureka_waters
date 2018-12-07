@@ -1,3 +1,4 @@
+<!-- loading django static files -->
 {% load static %}
 
 <!DOCTYPE html>
@@ -7,7 +8,7 @@
      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 
-        <!--Leaflet-->
+        <!-- Loading Django-Leaflet -->
         {% load leaflet_tags %}
         {% leaflet_js %}
         {% leaflet_css %}
@@ -15,7 +16,8 @@
         <!--CSS-->
      <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
      <link rel="stylesheet" type="text/css" href="{% static 'leaflet/leaflet-groupedLayers/leaflet.groupedlayercontrol.min.css' %}">
-
+       
+        <!-- loading leaflet plugins -->
      <script  src = "{% static 'leaflet/leaflet.ajax.js' %}"></script>
      <script  src = "{% static 'leaflet/leaflet-groupedLayers/leaflet.groupedlayercontrol.min.js' %}"></script>
 
@@ -28,13 +30,18 @@
 </head>
 <body>
     <h3>A Visualization of our Client Meters</h3>
+
+
     <script type="text/javascript" >
         function maps_layers(map, options){
-
+            //Loading background tilelayers from their link servers
             var osm = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
             var grayscale = L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png');
             
+            //loading the roads layers using geosjon ajax. The source is from django 
+                // url roads
             var roads = new L.GeoJSON.AJAX("{% url 'eureka_maps:roads'%}",{
+                //styling the roads layer depending on their road_type
                 style: function road_colors(feature){
                     switch(feature.properties.road_type.toLowerCase()){
                         case 'tarmac':
@@ -53,13 +60,15 @@
                             };
                     }
                 },
+
+                //adding a popup to display the road name and its type
                 onEachFeature:(feature, layer)=>{
                 layer.bindPopup('<b>Road Name: </b>' + feature.properties.road_name.toString()
                                 + '</br>' + '<b> Surface Type </b>' +
                                 feature.properties.road_type.toString())
                          }
                  });
-            
+            //loading the client_meters layers 
             var c_meters = new L.GeoJSON.AJAX("{% url 'eureka_maps:c_meters' %}",{
                 pointToLayer: (feature, latlng)=>{
                     var customicon = L.icon({
@@ -75,9 +84,11 @@
                                 + '<br/>' + '<b> Current Reading: </b>' + feature.properties.value.toString()) 
                      }
                  });
-
+                 // loading the disconnected clients layer
             var disconn = new L.GeoJSON.AJAX("{% url 'eureka_maps:disconnected' %}",{
                 pointToLayer:(feature, latlng)=>{
+                    //styling the marker icon 
+                    // setting the icon properties
                     var customicon = L.icon({
                         iconSize:[50,70],
                         iconAnchor:[12,28],
@@ -136,11 +147,14 @@
                     }
             });
 
+            //adding the layers to the map
             roads.addTo(map);
             c_meters.addTo(map);
             disconn.addTo(map);
             zones.addTo(map);
 
+            // setting the layers for control layers which allows 
+                // the user to switch among the various layers added.
             var baseLayers = {
                 "OSM":osm,
                 "Grayscale": grayscale,
