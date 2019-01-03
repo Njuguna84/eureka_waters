@@ -1,6 +1,6 @@
 import os
 from django.contrib.gis.utils import LayerMapping
-from .models import kiserian_roads
+from .models import Kiserian_Roads
 
 kiserian_roads_mapping = {
     'id': 'id',
@@ -18,9 +18,10 @@ kiserian_roads_shp = os.path.abspath(
     ),
 )
 
+
 def run(verbose=True):
     lm = LayerMapping(
-        kiserian_roads, kiserian_roads_shp, kiserian_roads_mapping,
-        transform= False, encoding='utf-8',
+        Kiserian_Roads, kiserian_roads_shp, kiserian_roads_mapping,
+        transform=False, encoding='utf-8',
     )
     lm.save(strict=True, verbose=verbose)

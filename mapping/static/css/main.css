@@ -7,3 +7,8 @@ h3{
     margin: 10px
 }
 
+/* css to customize Leaflet default styles  */
+.leaflet-popup {
+    bottom: 33px !important;
+    left: -117px !important;
+}

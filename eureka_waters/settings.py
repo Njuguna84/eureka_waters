@@ -14,7 +14,7 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TEMPLATE_DIR = os.path.join(BASE_DIR, 'mapping/templates/mapping')
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -40,7 +40,13 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'leaflet',
     'mapping',
+    'land_features'
 ]
+
+SERIALIZATION_MODULES = {
+    'geojson': 'djgeojson.serializers'
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -81,7 +87,7 @@ DATABASES = {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'eureka_waters',
         'USER': 'postgres',
-        'PASSWORD': '',
+        'PASSWORD': '123456789',
         'PORT': '5432',
     }
 }
@@ -134,5 +140,5 @@ LEAFLET_CONFIG = {
     'MIN_ZOOM': 2,
     'MAX_ZOOM': 19,
     'ATTRIBUTION_PREFIX': 'Mutall Data Managers',
-    
+
 }
