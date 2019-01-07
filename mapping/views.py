@@ -16,41 +16,28 @@ def index(request):
     return render(request, 'mapping/index.html')
 
 
-def client_meters1(request):
-    # meters = serializers.serialize('geojson', Reading.objects.all())
-    meters = serializers.serialize('geojson', Reading.objects.filter(date__gte=datetime.date(
-        2018, 10, 31)).filter(geom__isnull=False).select_related('client_connection__client__zone')[:2])
-
-    return HttpResponse(meters, content_type='application/json')
-
-
 def client_meters(request):
+    # the readings tables is first filtered to get data of the date greater than the set one and for non-null values
+        # the does a join operation from the readings(models/table) to Client_Connection and then to
+            # Client and finally to the Zone model
+                # the queryset is then stored in the variable client_meters_reading
+                    # Remember querysets are lazy
+
     client_meters_reading = Reading.objects.filter(date__gte=datetime.date(
         2018, 10, 31)).filter(geom__isnull=False).select_related('client_connection__client__zone').all()
 
-    # data = []
-
-    # for reading in client_meters_reading:
-    #     data = [{
-    #         "type": "Feature",
-    #         "properties": {
-    #             "client name": reading.client_connection.client.full_name,
-    #             "is connected": reading.client_connection.client.is_disconnected,
-    #             "is bulk": reading.client_connection.client.is_bulk,
-    #             "zone": reading.client_connection.client.zone.description
-    #         },
-    #         "geometry": mapping(shape({'type': 'Point', 'coordinates': [reading.longitude, reading.latitude]}))
-    #     }]
-
+    # we initialize the data list to the leaflet json
     data = [
         {
             "type": "Feature",
             "properties": {
+                "Reading_Value": obj.value,
                 "client_name": obj.client_connection.client.full_name,
                 "client_code": obj.client_connection.client.code,
                 "is_connected": obj.client_connection.client.is_disconnected,
                 "is_bulk": obj.client_connection.client.is_bulk,
-                "zone": obj.client_connection.client.zone.description
+                "eureka_zones": obj.client_connection.client.zone.description,
+
             },
             "geometry": {'type': 'Point', 'coordinates': [obj.longitude, obj.latitude]}
 

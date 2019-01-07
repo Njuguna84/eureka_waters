@@ -1,8 +1,10 @@
 from django.shortcuts import render
-
-# Create your views here.
+from django.core.serializers import serialize
+from django.core import serializers
+from .models import Kiserian_Roads
+from django.http import HttpResponse
 
 
 def k_roads(request):
-    roads = serializers.serialize("geojson", kiserian_roads.objects.all())
+    roads = serializers.serialize("geojson", Kiserian_Roads.objects.all())
     return HttpResponse(roads, content_type='json')

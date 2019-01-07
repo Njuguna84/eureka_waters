@@ -21,4 +21,5 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('admin/', admin.site.urls),
     path('maps/', include('mapping.urls')),
+    path('land_features/', include('land_features.urls'))
 ]

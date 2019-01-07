@@ -4,7 +4,7 @@ from django.contrib.gis.db import models
 
 
 class Kiserian_Roads(models.Model):
-    id = models.BigIntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     road_name = models.CharField(max_length=80)
     width = models.BigIntegerField()
     road_class = models.CharField(max_length=10)
